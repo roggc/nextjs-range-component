@@ -74,12 +74,8 @@ const Container = styled(
   top: 0;
   left: ${({ position }) => position}px;
   ${({ isBig }) => `transform: translate(-47%, -${isBig ? 39 : 36}%);`}
-  // transform: translate(-47%, -36%);
   opacity: 0.2;
   cursor: ${({ isMouseDown }) => (isMouseDown ? "grabbing" : "grab")};
-  // &:hover {
-  //   transform: scale(2);
-  // }
 `;
 
 export default Bullet;

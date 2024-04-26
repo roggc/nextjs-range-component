@@ -11,6 +11,7 @@ import {
   Reducer,
 } from "react";
 import Bullet from "./bullet";
+import Label from "./label";
 import { createPortal } from "react-dom";
 
 const BULLET_DIMENSION = 20;
@@ -54,10 +55,12 @@ const Range: FC<BarProps> = ({
   thickness = 5,
   color = "black",
   min = 1,
-  max = 10,
+  max = 100,
   stepSize = 1,
   ...props
 }) => {
+  const [innerMin, setInnerMin] = useState(min);
+  const [innerMax, setInnerMax] = useState(max);
   const numberOfSteps = (max - min) / stepSize;
   const [width, setWidth] = useState(0);
   const stepSizeInPX = (width ?? 0) / numberOfSteps;
@@ -133,6 +136,7 @@ const Range: FC<BarProps> = ({
       const newMinStep = Math.round(minMovementX1 / stepSizeInPX);
       if (newMinStep >= 0 && newMinStep < maxStep) {
         setMinStep(newMinStep);
+        setInnerMin(min + newMinStep * stepSize);
       }
     }
   }, [minMovementX1]);
@@ -142,15 +146,28 @@ const Range: FC<BarProps> = ({
       const newMaxStep = Math.round(minMovementX2 / stepSizeInPX);
       if (newMaxStep <= numberOfSteps && newMaxStep > minStep) {
         setMaxStep(newMaxStep);
+        setInnerMax(min + newMaxStep * stepSize);
       }
     }
   }, [minMovementX2]);
 
   useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const cr = entry.contentRect;
+        setWidth(cr.width);
+      }
+    });
+
     if (barRef.current) {
-      const rect = barRef.current.getBoundingClientRect();
-      setWidth(rect.right - rect.left);
+      resizeObserver.observe(barRef.current);
     }
+
+    return () => {
+      if (barRef.current) {
+        resizeObserver.unobserve(barRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -172,6 +189,7 @@ const Range: FC<BarProps> = ({
   return (
     <>
       <SupraContainer>
+        <Label value={innerMin} setValue={setInnerMin} />
         <Container
           thickness={thickness}
           color={color}
@@ -205,6 +223,7 @@ const Range: FC<BarProps> = ({
             ref={bulletRef2}
           />
         </Container>
+        <Label value={innerMax} setValue={setInnerMax} />
       </SupraContainer>
       {createPortal(
         <Portal
@@ -237,6 +256,7 @@ const Container = styled(
   border-radius: ${({ thickness }) => thickness}px;
   position: relative;
   ${({ isMouseDown }) => (isMouseDown ? "cursor:grabbing;" : "")}
+  flex:1;
 `;
 
 interface PortalProps {
@@ -258,6 +278,9 @@ const Portal = styled(({ isMouseDown, ...props }: PortalProps) => (
 
 const SupraContainer = styled.div`
   padding: 10px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
 `;
 
 export default Range;
