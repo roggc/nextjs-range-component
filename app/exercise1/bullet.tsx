@@ -8,6 +8,9 @@ interface BulletProps {
   onMouseDown: () => void;
   isMouseDown: boolean;
   onMouseUp: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+  isBig?: boolean;
 }
 
 const Bullet = forwardRef<HTMLDivElement, BulletProps>(
@@ -19,6 +22,9 @@ const Bullet = forwardRef<HTMLDivElement, BulletProps>(
       onMouseDown,
       isMouseDown,
       onMouseUp,
+      onMouseEnter,
+      onMouseLeave,
+      isBig = false,
       ...props
     },
     ref
@@ -31,6 +37,9 @@ const Bullet = forwardRef<HTMLDivElement, BulletProps>(
         onMouseDown={onMouseDown}
         isMouseDown={isMouseDown}
         onMouseUp={onMouseUp}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        isBig={isBig}
         ref={ref}
         {...props}
       />
@@ -45,11 +54,14 @@ interface ContainerProps {
   onMouseDown: () => void;
   isMouseDown: boolean;
   onMouseUp: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+  isBig: boolean;
 }
 
 const Container = styled(
   forwardRef<HTMLDivElement, ContainerProps>(
-    ({ color, dimension, position, isMouseDown, ...props }, ref) => (
+    ({ color, dimension, position, isMouseDown, isBig, ...props }, ref) => (
       <div ref={ref} {...props} />
     )
   )
@@ -61,9 +73,13 @@ const Container = styled(
   position: absolute;
   top: 0;
   left: ${({ position }) => position}px;
-  transform: translate(-47%, -36%);
+  ${({ isBig }) => `transform: translate(-47%, -${isBig ? 39 : 36}%);`}
+  // transform: translate(-47%, -36%);
   opacity: 0.2;
   cursor: ${({ isMouseDown }) => (isMouseDown ? "grabbing" : "grab")};
+  // &:hover {
+  //   transform: scale(2);
+  // }
 `;
 
 export default Bullet;
