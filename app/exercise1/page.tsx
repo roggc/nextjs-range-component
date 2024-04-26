@@ -1,7 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-const Range = dynamic(() => import("@/app/exercise1/range"), { ssr: false });
+const Range = dynamic(() => import("@/app/exercise1/range"), {
+  ssr: false,
+});
 import { useFetch } from "@/app/hooks";
 
 const API_URL = "http://demo1050961.mockable.io/get-min-max-values";
