@@ -9,20 +9,24 @@ import {
 import styled from "styled-components";
 import { useClickAway } from "@uidotdev/usehooks";
 
-type LabelProps = {
+interface LabelProps extends HTMLAttributes<HTMLDivElement> {
   value: number;
   setValue: (value: number) => void;
+  setStep: (value: number) => void;
+  min: number;
   minWidth?: number;
   maxWidth?: number;
   maxHeight?: number;
   isAlignRight?: boolean;
-};
+}
 
 const Label = forwardRef<HTMLDivElement, LabelProps>(
   (
     {
       value,
       setValue,
+      setStep,
+      min,
       minWidth,
       maxWidth,
       maxHeight,
@@ -38,11 +42,16 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
     useEffect(() => {
       if (!isEditMode) {
         setValue(editValue);
+        setStep(editValue - min);
       }
-    }, [editValue, isEditMode]);
+    }, [editValue, isEditMode, min]);
+
+    useEffect(() => {
+      setEditValue(value);
+    }, [value]);
 
     return (
-      <SupraContainer ref={ref}>
+      <SupraContainer ref={ref} {...props}>
         <Container
           // @ts-ignore
           ref={innerRef}
@@ -51,7 +60,6 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
           maxHeight={maxHeight}
           isAlignRight={isAlignRight}
           onClick={() => setIsEditMode(true)}
-          {...props}
         >
           {isEditMode ? (
             <Input

@@ -196,6 +196,8 @@ const Range: FC<BarProps> = ({
         <Label
           value={innerMin}
           setValue={setInnerMin}
+          setStep={setMinStep}
+          min={min}
           minWidth={maxLabelWidth ?? undefined}
           maxWidth={maxLabelWidth ?? undefined}
           maxHeight={maxLabelHeight ?? undefined}
@@ -235,6 +237,8 @@ const Range: FC<BarProps> = ({
         <Label
           value={innerMax}
           setValue={setInnerMax}
+          setStep={setMaxStep}
+          min={min}
           ref={maxLabelRef}
           minWidth={maxLabelWidth ?? undefined}
           maxWidth={maxLabelWidth ?? undefined}
