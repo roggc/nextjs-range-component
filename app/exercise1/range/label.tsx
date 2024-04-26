@@ -14,6 +14,8 @@ interface LabelProps extends HTMLAttributes<HTMLDivElement> {
   setValue: (value: number) => void;
   setStep: (value: number) => void;
   min: number;
+  max: number;
+  absoluteMin: number;
   minWidth?: number;
   maxWidth?: number;
   maxHeight?: number;
@@ -27,6 +29,8 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
       setValue,
       setStep,
       min,
+      max,
+      absoluteMin,
       minWidth,
       maxWidth,
       maxHeight,
@@ -37,17 +41,25 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
   ) => {
     const [isEditMode, setIsEditMode] = useState(false);
     const innerRef = useClickAway(() => setIsEditMode(false));
-    const [editValue, setEditValue] = useState(value);
+    const [editValue, setEditValue] = useState(value.toString());
 
     useEffect(() => {
-      if (!isEditMode) {
-        setValue(editValue);
-        setStep(editValue - min);
+      const newEditValue = parseInt(editValue, 10);
+      if (
+        !isEditMode &&
+        !isNaN(newEditValue) &&
+        newEditValue >= min &&
+        newEditValue <= max
+      ) {
+        setValue(newEditValue);
+        setStep(newEditValue - absoluteMin);
+      } else if (!isEditMode) {
+        setEditValue(value.toString());
       }
-    }, [editValue, isEditMode, min]);
+    }, [editValue, isEditMode, min, max, absoluteMin]);
 
     useEffect(() => {
-      setEditValue(value);
+      setEditValue(value.toString());
     }, [value]);
 
     return (
@@ -65,10 +77,10 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
             <Input
               maxWidth={maxWidth}
               type="number"
+              max={max}
+              min={min}
               value={editValue}
-              onChange={(event) =>
-                setEditValue(parseInt(event.target.value, 10))
-              }
+              onChange={(event) => setEditValue(event.target.value)}
             />
           ) : (
             <Text>{value}€</Text>
