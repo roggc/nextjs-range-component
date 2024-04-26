@@ -58,44 +58,88 @@ const Range: FC<BarProps> = ({
   const stepSize = (width ?? 0) / numberOfSteps;
   const [minStep, setMinStep] = useState(0);
   const [maxStep, setMaxStep] = useState(numberOfSteps);
-  const [isMouseDown, setIsMouseDown] = useState(false);
-  const [minMovementX, setMinMovementX] = useState(0);
-  const bulletRef = useRef<HTMLDivElement>(null);
+  const [isMouseDown1, setIsMouseDown1] = useState(false);
+  const [isMouseDown2, setIsMouseDown2] = useState(false);
+  const [minMovementX1, setMinMovementX1] = useState(0);
+  const [minMovementX2, setMinMovementX2] = useState(0);
+  const bulletRef1 = useRef<HTMLDivElement>(null);
+  const bulletRef2 = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
-  const [hover, setHover] = useState(false);
-  const isHoverDirtyRef = useRef(false);
-  const [bulletSizeProps, dispatchBulletSizeProps] = useReducer<
+  const [hover1, setHover1] = useState(false);
+  const [hover2, setHover2] = useState(false);
+  const isHover1DirtyRef = useRef(false);
+  const isHover2DirtyRef = useRef(false);
+  const [bulletSizeProps1, dispatchBulletSizeProps1] = useReducer<
     Reducer<BulletSizeProps, BulletSizePropsAction>
   >(bulletSizePropsReducer, { isBig: false, dimension: BULLET_DIMENSION });
+  const [bulletSizeProps2, dispatchBulletSizeProps2] = useReducer<
+    Reducer<BulletSizeProps, BulletSizePropsAction>
+  >(bulletSizePropsReducer, { isBig: false, dimension: BULLET_DIMENSION });
+  const [isLeftBullet, setIsLeftBullet] = useState(true);
 
-  const handleMouseEnter = () => {
-    setHover(true);
-    isHoverDirtyRef.current = true;
+  const handleMouseEnter1 = () => {
+    setHover1(true);
+    isHover1DirtyRef.current = true;
   };
 
-  const handleMouseLeave = () => {
-    setHover(false);
+  const handleMouseEnter2 = () => {
+    setHover2(true);
+    isHover2DirtyRef.current = true;
   };
 
-  const handleMouseDown = () => {
-    setIsMouseDown(true);
+  const handleMouseLeave1 = () => {
+    setHover1(false);
+  };
+
+  const handleMouseLeave2 = () => {
+    setHover2(false);
+  };
+
+  const handleMouseDown1 = () => {
+    setIsMouseDown1(true);
+    setIsLeftBullet(true);
+  };
+
+  const handleMouseDown2 = () => {
+    setIsMouseDown2(true);
+    setIsLeftBullet(false);
   };
 
   const handleMouseUp = () => {
-    setIsMouseDown(false);
+    setIsMouseDown1(false);
+    setIsMouseDown2(false);
   };
 
-  const handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
-    if (isMouseDown && barRef.current && bulletRef.current) {
-      const barOffsetX =
-        event.clientX - barRef.current.getBoundingClientRect().left;
-      setMinMovementX(barOffsetX);
-    }
-  };
+  const handleMouseMove =
+    (isLeftBullet: boolean) => (event: MouseEvent<HTMLDivElement>) => {
+      const isMouseDown = isLeftBullet ? isMouseDown1 : isMouseDown2;
+      const setMinMovementX = isLeftBullet
+        ? setMinMovementX1
+        : setMinMovementX2;
+      if (isMouseDown && barRef.current) {
+        const barOffsetX =
+          event.clientX - barRef.current.getBoundingClientRect().left;
+        setMinMovementX(barOffsetX);
+      }
+    };
 
   useEffect(() => {
-    setMinStep(Math.round(minMovementX / stepSize));
-  }, [minMovementX]);
+    if (minMovementX1) {
+      const newMinStep = Math.round(minMovementX1 / stepSize);
+      if (newMinStep >= 0 && newMinStep < maxStep) {
+        setMinStep(newMinStep);
+      }
+    }
+  }, [minMovementX1]);
+
+  useEffect(() => {
+    if (minMovementX2) {
+      const newMaxStep = Math.round(minMovementX2 / stepSize);
+      if (newMaxStep <= numberOfSteps && newMaxStep > minStep) {
+        setMaxStep(newMaxStep);
+      }
+    }
+  }, [minMovementX2]);
 
   useEffect(() => {
     if (barRef.current) {
@@ -105,12 +149,20 @@ const Range: FC<BarProps> = ({
   }, []);
 
   useEffect(() => {
-    if (hover && !bulletSizeProps.isBig) {
-      dispatchBulletSizeProps({ type: "SET_IS_BIG", payload: true });
-    } else if (isHoverDirtyRef.current && !isMouseDown && !hover) {
-      dispatchBulletSizeProps({ type: "SET_IS_BIG", payload: false });
+    if (hover1 && !bulletSizeProps1.isBig) {
+      dispatchBulletSizeProps1({ type: "SET_IS_BIG", payload: true });
+    } else if (isHover1DirtyRef.current && !isMouseDown1 && !hover1) {
+      dispatchBulletSizeProps1({ type: "SET_IS_BIG", payload: false });
     }
-  }, [hover, isMouseDown]);
+  }, [hover1, isMouseDown1]);
+
+  useEffect(() => {
+    if (hover2 && !bulletSizeProps2.isBig) {
+      dispatchBulletSizeProps2({ type: "SET_IS_BIG", payload: true });
+    } else if (isHover2DirtyRef.current && !isMouseDown2 && !hover2) {
+      dispatchBulletSizeProps2({ type: "SET_IS_BIG", payload: false });
+    }
+  }, [hover2, isMouseDown2]);
 
   return (
     <>
@@ -120,37 +172,40 @@ const Range: FC<BarProps> = ({
           color={color}
           ref={barRef}
           onMouseUp={handleMouseUp}
-          isMouseDown={isMouseDown}
+          isMouseDown={isMouseDown1 || isMouseDown2}
           {...props}
         >
           <Bullet
             color="red"
             position={minStep * stepSize}
-            onMouseDown={handleMouseDown}
-            isMouseDown={isMouseDown}
+            onMouseDown={handleMouseDown1}
+            isMouseDown={isMouseDown1}
             onMouseUp={handleMouseUp}
-            ref={bulletRef}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            dimension={bulletSizeProps.dimension}
-            isBig={bulletSizeProps.isBig}
+            onMouseEnter={handleMouseEnter1}
+            onMouseLeave={handleMouseLeave1}
+            dimension={bulletSizeProps1.dimension}
+            isBig={bulletSizeProps1.isBig}
+            ref={bulletRef1}
           />
           <Bullet
             color="purple"
             position={maxStep * stepSize}
-            onMouseDown={handleMouseDown}
-            isMouseDown={isMouseDown}
+            onMouseDown={handleMouseDown2}
+            isMouseDown={isMouseDown2}
             onMouseUp={handleMouseUp}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            onMouseEnter={handleMouseEnter2}
+            onMouseLeave={handleMouseLeave2}
+            dimension={bulletSizeProps2.dimension}
+            isBig={bulletSizeProps2.isBig}
+            ref={bulletRef2}
           />
         </Container>
       </SupraContainer>
       {createPortal(
         <Portal
           onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove}
-          isMouseDown={isMouseDown}
+          onMouseMove={handleMouseMove(isLeftBullet)}
+          isMouseDown={isMouseDown1 || isMouseDown2}
         />,
         document.body
       )}
