@@ -45,17 +45,22 @@ const bulletSizePropsReducer = (
 interface BarProps {
   thickness?: number;
   color?: string;
-  numberOfSteps?: number;
+  min?: number;
+  max?: number;
+  stepSize?: number;
 }
 
 const Range: FC<BarProps> = ({
   thickness = 5,
   color = "black",
-  numberOfSteps = 10,
+  min = 1,
+  max = 100,
+  stepSize = 1,
   ...props
 }) => {
+  const numberOfSteps = (max - min) / stepSize;
   const [width, setWidth] = useState(0);
-  const stepSize = (width ?? 0) / numberOfSteps;
+  const stepSizeInPX = (width ?? 0) / numberOfSteps;
   const [minStep, setMinStep] = useState(0);
   const [maxStep, setMaxStep] = useState(numberOfSteps);
   const [isMouseDown1, setIsMouseDown1] = useState(false);
@@ -125,7 +130,7 @@ const Range: FC<BarProps> = ({
 
   useEffect(() => {
     if (minMovementX1) {
-      const newMinStep = Math.round(minMovementX1 / stepSize);
+      const newMinStep = Math.round(minMovementX1 / stepSizeInPX);
       if (newMinStep >= 0 && newMinStep < maxStep) {
         setMinStep(newMinStep);
       }
@@ -134,7 +139,7 @@ const Range: FC<BarProps> = ({
 
   useEffect(() => {
     if (minMovementX2) {
-      const newMaxStep = Math.round(minMovementX2 / stepSize);
+      const newMaxStep = Math.round(minMovementX2 / stepSizeInPX);
       if (newMaxStep <= numberOfSteps && newMaxStep > minStep) {
         setMaxStep(newMaxStep);
       }
@@ -177,7 +182,7 @@ const Range: FC<BarProps> = ({
         >
           <Bullet
             color="red"
-            position={minStep * stepSize}
+            position={minStep * stepSizeInPX}
             onMouseDown={handleMouseDown1}
             isMouseDown={isMouseDown1}
             onMouseUp={handleMouseUp}
@@ -189,7 +194,7 @@ const Range: FC<BarProps> = ({
           />
           <Bullet
             color="purple"
-            position={maxStep * stepSize}
+            position={maxStep * stepSizeInPX}
             onMouseDown={handleMouseDown2}
             isMouseDown={isMouseDown2}
             onMouseUp={handleMouseUp}
