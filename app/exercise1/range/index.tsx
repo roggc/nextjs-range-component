@@ -13,6 +13,7 @@ import {
 import Bullet from "./bullet";
 import Label from "./label";
 import { createPortal } from "react-dom";
+import { useMeasure } from "@uidotdev/usehooks";
 
 const BULLET_DIMENSION = 20;
 
@@ -84,6 +85,8 @@ const Range: FC<BarProps> = ({
     Reducer<BulletSizeProps, BulletSizePropsAction>
   >(bulletSizePropsReducer, { isBig: false, dimension: BULLET_DIMENSION });
   const [isLeftBullet, setIsLeftBullet] = useState(true);
+  // const maxLabelRef = useRef<HTMLDivElement>(null);
+  const [maxLabelRef, { width: maxLabelWidth }] = useMeasure();
 
   const handleMouseEnter1 = () => {
     setHover1(true);
@@ -189,7 +192,12 @@ const Range: FC<BarProps> = ({
   return (
     <>
       <SupraContainer>
-        <Label value={innerMin} setValue={setInnerMin} />
+        <Label
+          value={innerMin}
+          setValue={setInnerMin}
+          minWidth={maxLabelWidth ?? undefined}
+          isAlignRight
+        />
         <Container
           thickness={thickness}
           color={color}
@@ -199,7 +207,6 @@ const Range: FC<BarProps> = ({
           {...props}
         >
           <Bullet
-            color="red"
             position={minStep * stepSizeInPX}
             onMouseDown={handleMouseDown1}
             isMouseDown={isMouseDown1}
@@ -211,7 +218,6 @@ const Range: FC<BarProps> = ({
             ref={bulletRef1}
           />
           <Bullet
-            color="purple"
             position={maxStep * stepSizeInPX}
             onMouseDown={handleMouseDown2}
             isMouseDown={isMouseDown2}
@@ -223,7 +229,12 @@ const Range: FC<BarProps> = ({
             ref={bulletRef2}
           />
         </Container>
-        <Label value={innerMax} setValue={setInnerMax} />
+        <Label
+          value={innerMax}
+          setValue={setInnerMax}
+          ref={maxLabelRef}
+          minWidth={maxLabelWidth ?? undefined}
+        />
       </SupraContainer>
       {createPortal(
         <Portal
