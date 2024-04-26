@@ -5,6 +5,7 @@ import {
   InputHTMLAttributes,
   HTMLAttributes,
   useEffect,
+  RefObject,
 } from "react";
 import styled from "styled-components";
 import { useClickAway } from "@uidotdev/usehooks";
@@ -40,7 +41,9 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
     ref
   ) => {
     const [isEditMode, setIsEditMode] = useState(false);
-    const innerRef = useClickAway(() => setIsEditMode(false));
+    const innerRef = useClickAway(() =>
+      setIsEditMode(false)
+    ) as RefObject<HTMLDivElement>;
     const [editValue, setEditValue] = useState(value.toString());
 
     useEffect(() => {
@@ -65,7 +68,6 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
     return (
       <SupraContainer ref={ref} {...props}>
         <Container
-          // @ts-ignore
           ref={innerRef}
           minWidth={minWidth}
           maxWidth={maxWidth}

@@ -1,15 +1,11 @@
-import { forwardRef } from "react";
+import { HTMLAttributes, forwardRef } from "react";
 import styled from "styled-components";
 
-interface BulletProps {
+interface BulletProps extends HTMLAttributes<HTMLDivElement> {
   color?: string;
   dimension?: number;
   position: number;
-  onMouseDown: () => void;
   isMouseDown: boolean;
-  onMouseUp: () => void;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
   isBig?: boolean;
 }
 
@@ -19,11 +15,7 @@ const Bullet = forwardRef<HTMLDivElement, BulletProps>(
       color = "black",
       dimension = 20,
       position,
-      onMouseDown,
       isMouseDown,
-      onMouseUp,
-      onMouseEnter,
-      onMouseLeave,
       isBig = false,
       ...props
     },
@@ -34,11 +26,7 @@ const Bullet = forwardRef<HTMLDivElement, BulletProps>(
         color={color}
         dimension={dimension}
         position={position}
-        onMouseDown={onMouseDown}
         isMouseDown={isMouseDown}
-        onMouseUp={onMouseUp}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
         isBig={isBig}
         ref={ref}
         {...props}
@@ -47,15 +35,11 @@ const Bullet = forwardRef<HTMLDivElement, BulletProps>(
   }
 );
 
-interface ContainerProps {
+interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
   color: string;
   dimension: number;
   position: number;
-  onMouseDown: () => void;
   isMouseDown: boolean;
-  onMouseUp: () => void;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
   isBig: boolean;
 }
 

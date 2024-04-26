@@ -9,6 +9,7 @@ import {
   useRef,
   useReducer,
   Reducer,
+  HTMLAttributes,
 } from "react";
 import Bullet from "./bullet";
 import Label from "./label";
@@ -44,7 +45,7 @@ const bulletSizePropsReducer = (
   }
 };
 
-interface BarProps {
+interface RangeProps extends HTMLAttributes<HTMLDivElement> {
   thickness?: number;
   color?: string;
   min?: number;
@@ -52,11 +53,11 @@ interface BarProps {
   stepSize?: number;
 }
 
-const Range: FC<BarProps> = ({
+const Range: FC<RangeProps> = ({
   thickness = 5,
   color = "black",
   min = 1,
-  max = 100,
+  max = 10,
   stepSize = 1,
   ...props
 }) => {
@@ -192,7 +193,7 @@ const Range: FC<BarProps> = ({
 
   return (
     <>
-      <SupraContainer>
+      <SupraContainer {...props}>
         <Label
           value={innerMin}
           setValue={setInnerMin}
@@ -211,7 +212,6 @@ const Range: FC<BarProps> = ({
           ref={barRef}
           onMouseUp={handleMouseUp}
           isMouseDown={isMouseDown1 || isMouseDown2}
-          {...props}
         >
           <Bullet
             position={minStep * stepSizeInPX}
@@ -261,10 +261,9 @@ const Range: FC<BarProps> = ({
   );
 };
 
-interface ContainerProps {
+interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
   thickness: number;
   color: string;
-  onMouseUp: () => void;
   isMouseDown: boolean;
 }
 
@@ -283,9 +282,7 @@ const Container = styled(
   flex:1;
 `;
 
-interface PortalProps {
-  onMouseUp: () => void;
-  onMouseMove: (event: MouseEvent<HTMLDivElement>) => void;
+interface PortalProps extends HTMLAttributes<HTMLDivElement> {
   isMouseDown: boolean;
 }
 
