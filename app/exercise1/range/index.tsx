@@ -86,7 +86,8 @@ const Range: FC<BarProps> = ({
   >(bulletSizePropsReducer, { isBig: false, dimension: BULLET_DIMENSION });
   const [isLeftBullet, setIsLeftBullet] = useState(true);
   // const maxLabelRef = useRef<HTMLDivElement>(null);
-  const [maxLabelRef, { width: maxLabelWidth }] = useMeasure();
+  const [maxLabelRef, { width: maxLabelWidth, height: maxLabelHeight }] =
+    useMeasure();
 
   const handleMouseEnter1 = () => {
     setHover1(true);
@@ -196,6 +197,8 @@ const Range: FC<BarProps> = ({
           value={innerMin}
           setValue={setInnerMin}
           minWidth={maxLabelWidth ?? undefined}
+          maxWidth={maxLabelWidth ?? undefined}
+          maxHeight={maxLabelHeight ?? undefined}
           isAlignRight
         />
         <Container
@@ -234,6 +237,8 @@ const Range: FC<BarProps> = ({
           setValue={setInnerMax}
           ref={maxLabelRef}
           minWidth={maxLabelWidth ?? undefined}
+          maxWidth={maxLabelWidth ?? undefined}
+          maxHeight={maxLabelHeight ?? undefined}
         />
       </SupraContainer>
       {createPortal(
