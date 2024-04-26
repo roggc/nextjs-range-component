@@ -54,7 +54,7 @@ const Range: FC<BarProps> = ({
   thickness = 5,
   color = "black",
   min = 1,
-  max = 100,
+  max = 10,
   stepSize = 1,
   ...props
 }) => {
