@@ -72,7 +72,7 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
     }, [value, isNoEdit]);
 
     return (
-      <SupraContainer ref={ref} {...props}>
+      <SupraContainer ref={ref} isNoEdit={isNoEdit} {...props}>
         <Container
           ref={innerRef}
           minWidth={minWidth}
@@ -122,9 +122,7 @@ const Container = styled(
   user-select:none;
 `;
 
-const Text = styled.div`
-  border: 1px solid white;
-`;
+const Text = styled.div``;
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   maxWidth?: number;
@@ -136,9 +134,16 @@ const Input = styled(({ maxWidth, ...props }: InputProps) => (
   ${({ maxWidth }) => (maxWidth ? `max-width:${maxWidth}px;` : "")}
 `;
 
-const SupraContainer = styled.div`
-  cursor: pointer;
-  z-index: 1;
+interface SupraContainerProps extends HTMLAttributes<HTMLDivElement> {
+  isNoEdit: boolean;
+}
+
+const SupraContainer = styled(
+  forwardRef<HTMLDivElement, SupraContainerProps>(
+    ({ isNoEdit, ...props }, ref) => <div ref={ref} {...props} />
+  )
+)`
+  ${({ isNoEdit }) => (isNoEdit ? "" : "cursor: pointer;z-index: 1;")}
 `;
 
 export default Label;

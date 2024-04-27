@@ -41,25 +41,30 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
     ref
   ) => {
     const [isEditMode, setIsEditMode] = useState(false);
-    const innerRef = useClickAway(() =>
-      setIsEditMode(false)
-    ) as RefObject<HTMLDivElement>;
+    const [isClickedAway, setIsClickedAway] = useState(false);
+    const innerRef = useClickAway(() => {
+      setIsEditMode(false);
+      setIsClickedAway(true);
+    }) as RefObject<HTMLDivElement>;
     const [editValue, setEditValue] = useState(value.toString());
 
     useEffect(() => {
-      const newEditValue = parseInt(editValue, 10);
-      if (
-        !isEditMode &&
-        !isNaN(newEditValue) &&
-        newEditValue >= min &&
-        newEditValue <= max
-      ) {
-        setValue(newEditValue);
-        setStep(newEditValue - absoluteMin);
-      } else if (!isEditMode) {
-        setEditValue(value.toString());
+      if (isClickedAway) {
+        const newEditValue = parseInt(editValue, 10);
+        setIsClickedAway(false);
+        if (
+          !isEditMode &&
+          !isNaN(newEditValue) &&
+          newEditValue >= min &&
+          newEditValue <= max
+        ) {
+          setValue(newEditValue);
+          setStep(newEditValue - absoluteMin);
+        } else if (!isEditMode) {
+          setEditValue(value.toString());
+        }
       }
-    }, [editValue, isEditMode, min, max, absoluteMin]);
+    }, [editValue, isEditMode, min, max, absoluteMin, isClickedAway]);
 
     useEffect(() => {
       setEditValue(value.toString());
@@ -116,9 +121,7 @@ const Container = styled(
   user-select:none;
 `;
 
-const Text = styled.div`
-  border: 1px solid white;
-`;
+const Text = styled.div``;
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   maxWidth?: number;
