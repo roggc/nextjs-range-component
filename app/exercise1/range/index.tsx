@@ -240,6 +240,7 @@ const Range: FC<RangeProps> = ({
           />
         </Container>
         <Label
+          dataTestId="maxLabel"
           value={innerMax}
           setValue={setInnerMax}
           setStep={setMaxStep}

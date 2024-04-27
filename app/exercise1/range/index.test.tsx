@@ -1,3 +1,4 @@
+import "@testing-library/dom";
 import "@testing-library/jest-dom";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -9,6 +10,79 @@ class ResizeObserver {
   disconnect() {}
 }
 
+function isElement(obj: any) {
+  if (typeof obj !== "object") {
+    return false;
+  }
+  let prototypeStr, prototype;
+  do {
+    prototype = Object.getPrototypeOf(obj);
+    // to work in iframe
+    prototypeStr = Object.prototype.toString.call(prototype);
+    // '[object Document]' is used to detect document
+    if (
+      prototypeStr === "[object Element]" ||
+      prototypeStr === "[object Document]"
+    ) {
+      return true;
+    }
+    obj = prototype;
+    // null is the terminal of object
+  } while (prototype !== null);
+  return false;
+}
+
+function getElementClientCenter(element: any) {
+  const { left, top, width, height } = element.getBoundingClientRect();
+  return {
+    x: left + width / 2,
+    y: top + height / 2,
+  };
+}
+
+const getCoords = (charlie: any) =>
+  isElement(charlie) ? getElementClientCenter(charlie) : charlie;
+
+const sleep = (ms: any) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
+async function drag(
+  element: any,
+  { to: inTo, delta, steps = 20, duration = 500 }: any
+) {
+  const from = getElementClientCenter(element);
+  const to = delta
+    ? {
+        x: from.x + delta.x,
+        y: from.y + delta.y,
+      }
+    : getCoords(inTo);
+
+  const step = {
+    x: (to.x - from.x) / steps,
+    y: (to.y - from.y) / steps,
+  };
+
+  const current = {
+    clientX: from.x,
+    clientY: from.y,
+  };
+
+  fireEvent.mouseEnter(element, current);
+  fireEvent.mouseOver(element, current);
+  fireEvent.mouseMove(element, current);
+  fireEvent.mouseDown(element, current);
+  for (let i = 0; i < steps; i++) {
+    current.clientX += step.x;
+    current.clientY += step.y;
+    await sleep(duration / steps);
+    fireEvent.mouseMove(element, current);
+  }
+  fireEvent.mouseUp(element, current);
+}
+
 describe("Range", () => {
   window.ResizeObserver = ResizeObserver;
   test("move minBullet to max position", async () => {
@@ -16,21 +90,33 @@ describe("Range", () => {
     render(<Range min={1} max={100} />);
     const minLabel = screen.getByTestId("minLabel");
     expect(minLabel).toHaveTextContent("1€");
+    const maxLabel = screen.getByTestId("maxLabel");
+    expect(maxLabel).toHaveTextContent("100€");
     const minBullet = screen.getByTestId("minBullet");
     const minBulletXBefore = minBullet.getBoundingClientRect().x;
     const maxBullet = screen.getByTestId("maxBullet");
+    const maxBulletX = maxBullet.getBoundingClientRect().x;
+    await waitFor(
+      () => {
+        expect(maxBulletX).toBeGreaterThan(0);
+      },
+      {
+        timeout: 1000,
+      }
+    );
+    console.log("maxBulletX", maxBulletX);
     // fireEvent.mouseDown(minBullet);
     // fireEvent.mouseMove(minBullet, {
     //   clientX: maxBullet.getBoundingClientRect().x,
     // });
     // fireEvent.mouseUp(minBullet);
-    await user.pointer([
-      { target: minBullet },
-      "MouseLeft>",
-      { target: maxBullet },
-      "/MouseLeft",
-    ]);
-
+    // await user.pointer([
+    //   { target: minBullet },
+    //   "MouseLeft>",
+    //   { target: maxBullet },
+    //   "/MouseLeft",
+    // ]);
+    await drag(minBullet, { to: maxBullet, steps: 1, duration: 1000 });
     const minBulletXAfter = minBullet.getBoundingClientRect().x;
     // expect(minLabel).toHaveTextContent("99€");
     // const updatedLabel = await screen.findByText("99€");
