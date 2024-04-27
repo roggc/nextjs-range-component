@@ -195,6 +195,7 @@ const Range: FC<RangeProps> = ({
     <>
       <SupraContainer {...props}>
         <Label
+          dataTestId="minLabel"
           value={innerMin}
           setValue={setInnerMin}
           setStep={setMinStep}
@@ -214,6 +215,7 @@ const Range: FC<RangeProps> = ({
           isMouseDown={isMouseDown1 || isMouseDown2}
         >
           <Bullet
+            dataTestId="minBullet"
             position={minStep * stepSizeInPX}
             onMouseDown={handleMouseDown1}
             isMouseDown={isMouseDown1}
@@ -225,6 +227,7 @@ const Range: FC<RangeProps> = ({
             ref={bulletRef1}
           />
           <Bullet
+            dataTestId="maxBullet"
             position={maxStep * stepSizeInPX}
             onMouseDown={handleMouseDown2}
             isMouseDown={isMouseDown2}

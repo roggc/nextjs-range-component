@@ -7,6 +7,7 @@ interface BulletProps extends HTMLAttributes<HTMLDivElement> {
   position: number;
   isMouseDown: boolean;
   isBig?: boolean;
+  dataTestId?: string;
 }
 
 const Bullet = forwardRef<HTMLDivElement, BulletProps>(
@@ -17,6 +18,7 @@ const Bullet = forwardRef<HTMLDivElement, BulletProps>(
       position,
       isMouseDown,
       isBig = false,
+      dataTestId = "",
       ...props
     },
     ref
@@ -28,6 +30,7 @@ const Bullet = forwardRef<HTMLDivElement, BulletProps>(
         position={position}
         isMouseDown={isMouseDown}
         isBig={isBig}
+        dataTestId={dataTestId}
         ref={ref}
         {...props}
       />
@@ -41,13 +44,15 @@ interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
   position: number;
   isMouseDown: boolean;
   isBig: boolean;
+  dataTestId: string;
 }
 
 const Container = styled(
   forwardRef<HTMLDivElement, ContainerProps>(
-    ({ color, dimension, position, isMouseDown, isBig, ...props }, ref) => (
-      <div ref={ref} {...props} />
-    )
+    (
+      { color, dimension, position, isMouseDown, isBig, dataTestId, ...props },
+      ref
+    ) => <div data-testid={dataTestId} ref={ref} {...props} />
   )
 )`
   border-radius: 50%;

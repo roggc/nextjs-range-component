@@ -6,6 +6,7 @@
 import type { Config } from "jest";
 
 const config: Config = {
+  transformIgnorePatterns: ["/node_modules/(?!(@uidotdev/usehooks)/)"],
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
