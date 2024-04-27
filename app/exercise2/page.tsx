@@ -4,13 +4,14 @@ import dynamic from "next/dynamic";
 const Range = dynamic(() => import("@/app/exercise2/range"), {
   ssr: false,
 });
-import { useFetch } from "@/app/hooks";
+import { useFetch, useMyFetch } from "@/app/hooks";
+import { API_RESULT } from "@/app/exercise2/api";
 
 const API_URL = "http://demo1050961.mockable.io/get-range-values";
-type API_RESULT = number[];
 
 export default function Home() {
   const { data, isLoading, isError } = useFetch<API_RESULT>(API_URL);
+  // const { data, isLoading, isError } = useMyFetch();
 
   if (isError) {
     return <>An error ocurred while fetching the data.</>;
