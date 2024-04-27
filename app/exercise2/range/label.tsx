@@ -122,9 +122,7 @@ const Container = styled(
   user-select:none;
 `;
 
-const Text = styled.div`
-  border: 1px solid white;
-`;
+const Text = styled.div``;
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   maxWidth?: number;
