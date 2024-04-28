@@ -13,7 +13,6 @@ import {
 } from "react";
 import Bullet from "./bullet";
 import Label from "./label";
-// import { createPortal } from "react-dom";
 import { useMeasure } from "@uidotdev/usehooks";
 
 const BULLET_DIMENSION = 20;
@@ -86,7 +85,6 @@ const Range: FC<RangeProps> = ({
     Reducer<BulletSizeProps, BulletSizePropsAction>
   >(bulletSizePropsReducer, { isBig: false, dimension: BULLET_DIMENSION });
   const [isLeftBullet, setIsLeftBullet] = useState(true);
-  // const maxLabelRef = useRef<HTMLDivElement>(null);
   const [maxLabelRef, { width: maxLabelWidth, height: maxLabelHeight }] =
     useMeasure();
 
@@ -253,15 +251,12 @@ const Range: FC<RangeProps> = ({
           maxHeight={maxLabelHeight ?? undefined}
         />
       </SupraContainer>
-      {/* {createPortal( */}
       <Portal
         dataTestId="portal"
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove(isLeftBullet)}
         isMouseDown={isMouseDown1 || isMouseDown2}
       />
-      {/* document.body
-      )} */}
     </>
   );
 };
