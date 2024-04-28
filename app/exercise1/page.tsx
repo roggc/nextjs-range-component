@@ -5,6 +5,7 @@ const Range = dynamic(() => import("@/app/exercise1/range"), {
   ssr: false,
 });
 import { useFetch } from "@/app/hooks";
+import styled from "styled-components";
 
 const API_URL = "http://demo1050961.mockable.io/get-min-max-values";
 type API_RESULT = { min: number; max: number };
@@ -21,8 +22,12 @@ export default function Home() {
   }
 
   return (
-    <>
+    <Container>
       <Range min={data?.min} max={data?.max} />
-    </>
+    </Container>
   );
 }
+
+const Container = styled.div`
+  flex: 1;
+`;

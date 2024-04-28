@@ -48,7 +48,7 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
     const innerRef = useClickAway(() =>
       setIsEditMode(false)
     ) as RefObject<HTMLDivElement>;
-    const [editValue, setEditValue] = useState(value.toString());
+    const [editValue, setEditValue] = useState(value?.toString());
 
     useEffect(() => {
       if (!isNoEdit) {
@@ -98,7 +98,7 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
               onChange={(event) => setEditValue(event.target.value)}
             />
           ) : (
-            <Text>{value.toFixed(2)}€</Text>
+            <Text>{value?.toFixed(2)}€</Text>
           )}
         </Container>
       </SupraContainer>

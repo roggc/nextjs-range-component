@@ -4,8 +4,8 @@ import styled from "styled-components";
 export default function Home() {
   return (
     <Container>
-      enter localhost:3000/exercise1 and localhost:3000/exercise2 in the browser
-      to see the components.
+      This is a range component. There are two versions. For the first one click
+      on Exercise 1, for the second on Exercise 2.
     </Container>
   );
 }

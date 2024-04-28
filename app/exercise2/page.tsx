@@ -6,6 +6,7 @@ const Range = dynamic(() => import("@/app/exercise2/range"), {
 });
 import { useFetch, useMyFetch } from "@/app/hooks";
 import { API_RESULT } from "@/app/exercise2/api";
+import styled from "styled-components";
 
 const API_URL = "http://demo1050961.mockable.io/get-range-values";
 
@@ -22,8 +23,12 @@ export default function Home() {
   }
 
   return (
-    <>
+    <Container>
       <Range values={data ?? []} />
-    </>
+    </Container>
   );
 }
+
+const Container = styled.div`
+  flex: 1;
+`;
