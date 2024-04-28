@@ -13,7 +13,7 @@ import {
 } from "react";
 import Bullet from "./bullet";
 import Label from "./label";
-import { createPortal } from "react-dom";
+// import { createPortal } from "react-dom";
 import { useMeasure } from "@uidotdev/usehooks";
 
 const BULLET_DIMENSION = 20;
@@ -195,6 +195,7 @@ const Range: FC<RangeProps> = ({
     <>
       <SupraContainer {...props}>
         <Label
+          dataTestId="minLabel"
           value={innerMin}
           setValue={setInnerMin}
           setStep={setMinStep}
@@ -214,6 +215,7 @@ const Range: FC<RangeProps> = ({
           isMouseDown={isMouseDown1 || isMouseDown2}
         >
           <Bullet
+            dataTestId="minBullet"
             position={minStep * stepSizeInPX}
             onMouseDown={handleMouseDown1}
             isMouseDown={isMouseDown1}
@@ -225,6 +227,7 @@ const Range: FC<RangeProps> = ({
             ref={bulletRef1}
           />
           <Bullet
+            dataTestId="maxBullet"
             position={maxStep * stepSizeInPX}
             onMouseDown={handleMouseDown2}
             isMouseDown={isMouseDown2}
@@ -237,6 +240,7 @@ const Range: FC<RangeProps> = ({
           />
         </Container>
         <Label
+          dataTestId="maxLabel"
           value={innerMax}
           setValue={setInnerMax}
           setStep={setMaxStep}
@@ -249,14 +253,15 @@ const Range: FC<RangeProps> = ({
           maxHeight={maxLabelHeight ?? undefined}
         />
       </SupraContainer>
-      {createPortal(
-        <Portal
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove(isLeftBullet)}
-          isMouseDown={isMouseDown1 || isMouseDown2}
-        />,
-        document.body
-      )}
+      {/* {createPortal( */}
+      <Portal
+        dataTestId="portal"
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove(isLeftBullet)}
+        isMouseDown={isMouseDown1 || isMouseDown2}
+      />
+      {/* document.body
+      )} */}
     </>
   );
 };
@@ -284,10 +289,11 @@ const Container = styled(
 
 interface PortalProps extends HTMLAttributes<HTMLDivElement> {
   isMouseDown: boolean;
+  dataTestId?: string;
 }
 
-const Portal = styled(({ isMouseDown, ...props }: PortalProps) => (
-  <div {...props} />
+const Portal = styled(({ isMouseDown, dataTestId, ...props }: PortalProps) => (
+  <div data-testid={dataTestId} {...props} />
 ))`
   position: absolute;
   top: 0;

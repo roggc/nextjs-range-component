@@ -13,7 +13,7 @@ import {
 } from "react";
 import Bullet from "./bullet";
 import Label from "./label";
-import { createPortal } from "react-dom";
+// import { createPortal } from "react-dom";
 import { useMeasure } from "@uidotdev/usehooks";
 
 const BULLET_DIMENSION = 20;
@@ -293,14 +293,15 @@ const Range: FC<RangeProps> = ({
           isNoEdit
         />
       </SupraContainer>
-      {createPortal(
-        <Portal
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove(isLeftBullet)}
-          isMouseDown={isMouseDown1 || isMouseDown2}
-        />,
-        document.body
-      )}
+      {/* {createPortal( */}
+      <Portal
+        dataTestId="portal"
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove(isLeftBullet)}
+        isMouseDown={isMouseDown1 || isMouseDown2}
+      />
+      {/* document.body
+      )} */}
     </>
   );
 };
@@ -328,10 +329,11 @@ const Container = styled(
 
 interface PortalProps extends HTMLAttributes<HTMLDivElement> {
   isMouseDown: boolean;
+  dataTestId?: string;
 }
 
-const Portal = styled(({ isMouseDown, ...props }: PortalProps) => (
-  <div {...props} />
+const Portal = styled(({ isMouseDown, dataTestId, ...props }: PortalProps) => (
+  <div data-testid={dataTestId} {...props} />
 ))`
   position: absolute;
   top: 0;

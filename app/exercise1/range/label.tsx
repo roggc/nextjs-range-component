@@ -21,6 +21,7 @@ interface LabelProps extends HTMLAttributes<HTMLDivElement> {
   maxWidth?: number;
   maxHeight?: number;
   isAlignRight?: boolean;
+  dataTestId?: string;
 }
 
 const Label = forwardRef<HTMLDivElement, LabelProps>(
@@ -36,6 +37,7 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
       maxWidth,
       maxHeight,
       isAlignRight = false,
+      dataTestId = "",
       ...props
     },
     ref
@@ -71,7 +73,7 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
     }, [value]);
 
     return (
-      <SupraContainer ref={ref} {...props}>
+      <SupraContainer dataTestId={dataTestId} ref={ref} {...props}>
         <Container
           ref={innerRef}
           minWidth={minWidth}
@@ -133,7 +135,17 @@ const Input = styled(({ maxWidth, ...props }: InputProps) => (
   ${({ maxWidth }) => (maxWidth ? `max-width:${maxWidth}px;` : "")}
 `;
 
-const SupraContainer = styled.div`
+interface SupraContainerProps extends HTMLAttributes<HTMLDivElement> {
+  dataTestId: string;
+}
+
+const SupraContainer = styled(
+  forwardRef<HTMLDivElement, SupraContainerProps>(
+    ({ dataTestId, ...props }, ref) => (
+      <div data-testid={dataTestId} ref={ref} {...props} />
+    )
+  )
+)`
   cursor: pointer;
   z-index: 1;
 `;

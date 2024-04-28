@@ -22,6 +22,7 @@ interface LabelProps extends HTMLAttributes<HTMLDivElement> {
   maxHeight?: number;
   isAlignRight?: boolean;
   isNoEdit?: boolean;
+  dataTestId?: string;
 }
 
 const Label = forwardRef<HTMLDivElement, LabelProps>(
@@ -38,6 +39,7 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
       maxHeight,
       isAlignRight = false,
       isNoEdit = false,
+      dataTestId = "",
       ...props
     },
     ref
@@ -72,7 +74,12 @@ const Label = forwardRef<HTMLDivElement, LabelProps>(
     }, [value, isNoEdit]);
 
     return (
-      <SupraContainer ref={ref} isNoEdit={isNoEdit} {...props}>
+      <SupraContainer
+        dataTestId={dataTestId}
+        ref={ref}
+        isNoEdit={isNoEdit}
+        {...props}
+      >
         <Container
           ref={innerRef}
           minWidth={minWidth}
@@ -136,11 +143,14 @@ const Input = styled(({ maxWidth, ...props }: InputProps) => (
 
 interface SupraContainerProps extends HTMLAttributes<HTMLDivElement> {
   isNoEdit: boolean;
+  dataTestId: string;
 }
 
 const SupraContainer = styled(
   forwardRef<HTMLDivElement, SupraContainerProps>(
-    ({ isNoEdit, ...props }, ref) => <div ref={ref} {...props} />
+    ({ isNoEdit, dataTestId, ...props }, ref) => (
+      <div data-testid={dataTestId} ref={ref} {...props} />
+    )
   )
 )`
   ${({ isNoEdit }) => (isNoEdit ? "" : "cursor: pointer;z-index: 1;")}
