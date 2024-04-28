@@ -255,6 +255,7 @@ const Range: FC<RangeProps> = ({
       </SupraContainer>
       {/* {createPortal( */}
       <Portal
+        dataTestId="portal"
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove(isLeftBullet)}
         isMouseDown={isMouseDown1 || isMouseDown2}
@@ -288,10 +289,11 @@ const Container = styled(
 
 interface PortalProps extends HTMLAttributes<HTMLDivElement> {
   isMouseDown: boolean;
+  dataTestId?: string;
 }
 
-const Portal = styled(({ isMouseDown, ...props }: PortalProps) => (
-  <div {...props} />
+const Portal = styled(({ isMouseDown, dataTestId, ...props }: PortalProps) => (
+  <div data-testid={dataTestId} {...props} />
 ))`
   position: absolute;
   top: 0;

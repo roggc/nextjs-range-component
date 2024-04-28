@@ -88,37 +88,68 @@ describe("Range", () => {
   test("move minBullet to max position", async () => {
     const user = userEvent.setup();
     render(<Range min={1} max={100} />);
+    await new Promise((r) => setTimeout(r, 10));
+
     const minLabel = screen.getByTestId("minLabel");
     expect(minLabel).toHaveTextContent("1€");
     const maxLabel = screen.getByTestId("maxLabel");
     expect(maxLabel).toHaveTextContent("100€");
+
     const minBullet = screen.getByTestId("minBullet");
     const minBulletXBefore = minBullet.getBoundingClientRect().x;
     const maxBullet = screen.getByTestId("maxBullet");
     const maxBulletX = maxBullet.getBoundingClientRect().x;
-    await waitFor(
-      () => {
-        expect(maxBulletX).toBeGreaterThan(0);
-      },
-      {
-        timeout: 1000,
-      }
-    );
-    console.log("maxBulletX", maxBulletX);
+    const portal = screen.getByTestId("portal");
+
+    const current = {
+      clientX: 0,
+      clientY: 0,
+    };
+    fireEvent.mouseMove(minBullet, current);
+    fireEvent.mouseDown(minBullet, current);
+
+    const longitude = 500;
+    const numOfSteps = 30;
+    const steps = [...Array(numOfSteps).keys()];
+    let x;
+    for (const step of steps) {
+      x = 0 + (step * longitude) / numOfSteps;
+      fireEvent.mouseMove(portal, { clientX: x, clientY: 0 });
+      await new Promise((r) => setTimeout(r, 20));
+    }
+    fireEvent.mouseUp(minBullet, {
+      clientX: x,
+      clientY: 0,
+    });
+
+    // await waitFor(
+    //   () => {
+    //     expect(maxBulletX).toBeGreaterThan(0);
+    //   },
+    //   {
+    //     timeout: 1000,
+    //   }
+    // );
+    // console.log("maxBulletX", maxBulletX);
+
     // fireEvent.mouseDown(minBullet);
     // fireEvent.mouseMove(minBullet, {
     //   clientX: maxBullet.getBoundingClientRect().x,
     // });
     // fireEvent.mouseUp(minBullet);
+
     // await user.pointer([
     //   { target: minBullet },
     //   "MouseLeft>",
     //   { target: maxBullet },
     //   "/MouseLeft",
     // ]);
-    await drag(minBullet, { to: maxBullet, steps: 1, duration: 1000 });
-    const minBulletXAfter = minBullet.getBoundingClientRect().x;
-    // expect(minLabel).toHaveTextContent("99€");
+
+    // await drag(minBullet, { to: maxBullet, steps: 1, duration: 1000 });
+
+    // const minBulletXAfter = minBullet.getBoundingClientRect().x;
+
+    expect(minLabel).toHaveTextContent("99€");
     // const updatedLabel = await screen.findByText("99€");
     // expect(updatedLabel).toBeInTheDocument();
     // await waitFor(
@@ -129,6 +160,7 @@ describe("Range", () => {
     //     timeout: 1000,
     //   }
     // );
-    expect(minBulletXAfter).toBeGreaterThan(minBulletXBefore);
+
+    // expect(minBulletXAfter).toBeGreaterThan(minBulletXBefore);
   });
 });
