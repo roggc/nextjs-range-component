@@ -13,7 +13,7 @@ import {
 } from "react";
 import Bullet from "./bullet";
 import Label from "./label";
-import { createPortal } from "react-dom";
+// import { createPortal } from "react-dom";
 import { useMeasure } from "@uidotdev/usehooks";
 
 const BULLET_DIMENSION = 20;
@@ -293,14 +293,14 @@ const Range: FC<RangeProps> = ({
           isNoEdit
         />
       </SupraContainer>
-      {createPortal(
-        <Portal
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove(isLeftBullet)}
-          isMouseDown={isMouseDown1 || isMouseDown2}
-        />,
-        document.body
-      )}
+      {/* {createPortal( */}
+      <Portal
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove(isLeftBullet)}
+        isMouseDown={isMouseDown1 || isMouseDown2}
+      />
+      {/* document.body
+      )} */}
     </>
   );
 };

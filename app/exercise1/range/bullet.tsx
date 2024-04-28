@@ -64,6 +64,7 @@ const Container = styled(
   left: ${({ position }) => position}px;
   ${({ isBig }) => `transform: translate(-47%, -${isBig ? 39 : 36}%);`}
   cursor: ${({ isMouseDown }) => (isMouseDown ? "grabbing" : "grab")};
+  z-index: 1;
 `;
 
 export default Bullet;
