@@ -4,6 +4,8 @@ import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Range from "./index";
 
+// this test fails. for unit tests working see other project https://github.com/roggc/nextjs-range-component-test
+
 class ResizeObserver {
   observe() {}
   unobserve() {}
